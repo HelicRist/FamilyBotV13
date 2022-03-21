@@ -9,8 +9,8 @@ module.exports = {
     once: true,
 
     run: async (client) => {
-        logger.success((`[${client.user.username}] is online!`));
-        const Guild = client.guilds.cache.get("666312151354572801");
+        logger.success((`[${client.user.username}] is online! (prefix: ${config.prefix})`));
+        const Guild = client.guilds.cache.get("945590033035984926");
 
         dailyPickJob.run(client);
         mudaeRoleJob.run(client, Guild);
