@@ -1,0 +1,20 @@
+{
+  "name": "familybotv13",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "akaneko": "^5.2.2",
+    "cron": "^1.8.2",
+    "discord.js": "^13.3.1",
+    "dotenv": "^10.0.0",
+    "node-color-log": "^9.0.0",
+    "nodemon": "^2.0.15"
+  }
+}
