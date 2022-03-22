@@ -4,7 +4,7 @@ require('dotenv').config();
 const fs = require('fs');
 
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]
 });
 
 const commandFolders = fs.readdirSync('./commands');
@@ -35,7 +35,12 @@ client.on('messageCreate', message => {
     client.events.get('messageCreate').run(client, message);
 })
 
-client.on('ready', () => {
+client.once('ready', () => {
     client.events.get('ready').run(client);
 });
+
+client.on('voiceStateUpdate', (oldState, newState) => {
+    client.events.get('voiceStateUpdate').run(client, oldState, newState);
+})
+
 client.login(process.env.TOKEN);

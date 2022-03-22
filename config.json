@@ -1,4 +1,7 @@
 {
     "prefix": ".",
-    "iconUrl":"https://i.imgur.com/csNmDIi.png"
+    "iconUrl":"https://i.imgur.com/csNmDIi.png",
+    "createChannelID": "821306934727934012",
+    "guildID": "655724536792219671",
+    "pancakeRoleID": "704950465577877596"
 }
