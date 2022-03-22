@@ -1,6 +1,7 @@
 const { Message, MessageEmbed } = require("discord.js");
 const fs = require("fs");
 const config = require('../../config.json');
+const sendLog = require('../../functions/log/sendLog');
 
 module.exports = {
     name: 'help',
@@ -14,11 +15,14 @@ module.exports = {
             const category = args[0];
 
             if (!checkCategory(category, client)) {
-                message.channel.send(`:x: Categoria ${category} non trovata!`);
+                sendLog.run(message, `Categoria **${category}** non trovata!`, 1);
                 return;
             }
 
             sendCategoryHelp(client, category, message);
+        }
+        else {
+            sendGeneralHelp(message);
         }
     }
 }
@@ -37,22 +41,49 @@ const sendCategoryHelp = (client, category, message) => {
     const categoryObject = client.categories.get(category);
     categoryObject.forEach(command => {
         fields.push({
-            name: command.name,
-            value: command.usage,
+            name: command.name.toUpperCase(),
+            value: `**Descrizione: **${command.description}\n**Uso: ** `+'`'+`${command.usage}`+'`',
         });
     });
     console.log(fields);
 
     const embed = new MessageEmbed()
-        .setTitle(`Comandi in ${category}`)
-        .setAuthor( 'Friendly Bot')
+        .setTitle(`Comandi di *${category}*`)
+        .setAuthor('Family Bot', config.iconUrl, 'https://discord.gg/fhW9qQW')
+        .setColor(0x00AE86)
+        .addFields(fields)
+        .setThumbnail(config.iconUrl)
+        .setFooter(`Friendly Bot`, config.iconUrl)
+
+    message.channel.send({ embeds: [embed] });
+}
+
+const sendGeneralHelp = (message) => {
+    let fields = [];
+    const commandFolders = fs.readdirSync('./commands');
+    for (const folder of commandFolders) {
+        const commandFIles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+        let commands = '';
+        for (const file of commandFIles) {
+            const command = require(`../../commands/${folder}/${file}`);
+            commands += `${command.name}, `
+        }
+
+        fields.push({
+            name: folder.toUpperCase(),
+            value: '`' + `${config.prefix}help ${folder}` + '`',
+            inline: true
+        });
+    }
+
+    const embed = new MessageEmbed()
+        .setTitle(`Lista dei comandi del bot. Per proposte, scrivere in *[canale_inesistente]*`)
+        .setAuthor('Family Bot', config.iconUrl, 'https://discord.gg/fhW9qQW')
         .setColor(0x00AE86)
         .setDescription(`Lista dei comandi del bot. Per proposte, scrivere in *[canale_inesistente]*`)
         .addFields(fields)
         .setThumbnail(config.iconUrl)
         .setFooter(`Friendly Bot`, config.iconUrl)
 
-    message.channel.send({embeds: [embed]});
+    message.channel.send({ embeds: [embed] });
 }
-
-const sendMessageHelp = (command, message) => {}
