@@ -1,7 +1,7 @@
 const config = require('../config.json')
 const logger = require('node-color-log');
-const dailyPickJob = require('../cronJobs/dailyPick.js');
-const mudaeRoleJob = require('../cronJobs/mudaeJob.js');
+const dailyPickJob = require('./functions/dailyPick.js');
+const mudaeRoleJob = require('./functions/mudaeJob.js');
 
 module.exports = {
     name: "ready",

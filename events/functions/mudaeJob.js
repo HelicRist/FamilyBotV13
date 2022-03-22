@@ -1,5 +1,5 @@
 const cron = require('cron');
-const IDs = require("../data/IDs.json")
+const IDs = require("../../data/IDs.json")
 
 module.exports = {
     name: "dailyPick",
