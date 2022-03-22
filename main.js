@@ -10,12 +10,18 @@ const client = new Client({
 const commandFolders = fs.readdirSync('./commands');
 
 client.commands = new Collection();
+client.categories = new Collection();
+
+
 for (const folder of commandFolders) {
     const commandFIles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+    let commands = [];
     for (const file of commandFIles) {
         const command = require(`./commands/${folder}/${file}`);
         client.commands.set(command.name, command);
+        commands.push(command);
     }
+    client.categories.set(folder, commands);
 }
 
 client.events = new Collection();
@@ -29,14 +35,7 @@ client.on('messageCreate', message => {
     client.events.get('messageCreate').run(client, message);
 })
 
-
-for (const file of eventFiles) {
-    const event = require(`./events/${file}`);
-    if (event.once) {
-        client.once(event.name, (...args) => event.run(...args));
-    } else {
-        client.on(event.name, (...args) => event.run(...args));
-    }
-}
-
+client.on('ready', () => {
+    client.events.get('ready').run(client);
+});
 client.login(process.env.TOKEN);
