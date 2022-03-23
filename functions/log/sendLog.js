@@ -10,7 +10,7 @@ const config = require('../../config.json');
  */
 
 module.exports = {
-    run: async (message, content, type) => {
+    run: async (interaction, content, type) => {
         let color = null;
         let title = null;
         let description = content;
@@ -41,6 +41,6 @@ module.exports = {
             .setColor(color)
             .setDescription(description);
 
-        message.channel.send({ embeds: [embed] });
+        interaction.reply({ embeds: [embed] });
     }
 }
