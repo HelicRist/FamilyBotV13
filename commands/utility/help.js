@@ -45,16 +45,14 @@ const sendCategoryHelp = (client, category, interaction) => {
     let fields = [];
     const categoryList = client.categories.get("categorie");
     const categoryObject = client.commands
-    categoryList.forEach(category => {
-        let commands = categoryObject.get(category);
-        commands.forEach(command => {
-            fields.push({
-                name: command.name.toUpperCase(),
-                value: `**Nome: **${command.name}\n**Uso: ** ` + '`' + `${command.description}` + '`',
-            });
+    
+    let commands = categoryObject.get(category);
+    commands.forEach(command => {
+        fields.push({
+            name: command.name.toUpperCase(),
+            value: `**Nome: **${command.name}\n**Uso: ** ` + '`' + `${command.description}` + '`',
         });
     });
-    console.log(fields);
 
     const embed = new MessageEmbed()
         .setTitle(`Comandi di *${category}*`)
