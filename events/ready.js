@@ -2,6 +2,7 @@ const config = require('../config.json')
 const logger = require('node-color-log');
 const dailyPickJob = require('./functions/dailyPick.js');
 const mudaeRoleJob = require('./functions/mudaeJob.js');
+const loader = require("../loaders/slash")
 
 module.exports = {
     name: "ready",
@@ -13,5 +14,7 @@ module.exports = {
 
         dailyPickJob.run(client);
         mudaeRoleJob.run(client, Guild);
+
+        loader(client);
     }
 }
