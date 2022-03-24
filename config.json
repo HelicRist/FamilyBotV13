@@ -6,5 +6,12 @@
     "clientID": "767735653424431135",
     "guildID": "655724536792219671",
     "pancakeRoleID": "821313311047286804",
-    "argoBasicURL": "https://www.portaleargo.it/famiglia/api/rest"
+    "argoBasicURL": "https://www.portaleargo.it/famiglia/api/rest",
+    "compitiID": "682230804528627718",
+    "messagesToCheckReactions": [
+        {
+            "channelID": "682230804528627718",
+            "messageID": "956587928329551873"
+        }
+    ]
 }

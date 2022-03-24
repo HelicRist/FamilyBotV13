@@ -1,7 +1,7 @@
 const axios = require("axios")
 const config = require("../config.json")
 
-const getCompiti = async (giorno) => {
+const getCompiti = async () => {
     const options = {
         headers: {
             'Access-Control-Allow-Origin': '*',

@@ -1,5 +1,6 @@
 const cron = require('cron');
 const akaneko = require('akaneko');
+const {MessageEmbed} = require ("discord.js")
 
 module.exports = {
     name: "dailyPick",
@@ -16,7 +17,7 @@ module.exports = {
                     .setTitle(" :lollipop:  DAILY PIC  :purple_heart: ")
                     .setColor("#FFDEDE")
                     .setImage(imageURL)
-                client.channels.cache.get("821068653348913223").send(hembed)
+                client.channels.cache.get("821068653348913223").send({embeds: [hembed]})
             });
         });
 
