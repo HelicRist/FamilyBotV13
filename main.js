@@ -2,6 +2,7 @@ const { Client, Intents, Collection } = require('discord.js');
 const config = require('./config.json')
 require('dotenv').config();
 const fs = require('fs');
+const getToken = require('./api/getToken');
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]
@@ -37,6 +38,7 @@ client.on('messageCreate', message => {
 
 client.once('ready', () => {
     client.events.get('ready').run(client);
+    getToken.run(1,2);
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
