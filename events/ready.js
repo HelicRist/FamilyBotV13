@@ -4,18 +4,20 @@ const dailyPickJob = require('./functions/dailyPick.js');
 const mudaeRoleJob = require('./functions/mudaeJob.js');
 const compitiDomani = require("./functions/compitiDomani")
 const loader = require("../loaders/slash")
+const roles = require("./functions/roles")
 
 module.exports = {
     name: "ready",
     once: true,
 
     run: async (client) => {
+        roles.run(client);
         logger.success((`[${client.user.username}] is online! (prefix: ${config.prefix})`));
         const Guild = client.guilds.cache.get("655724536792219671");
 
         dailyPickJob.run(client);
         mudaeRoleJob.run(client, Guild);
-        compitiDomani.run(client)
+        compitiDomani.run(client);
 
         loader(client);
 

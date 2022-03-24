@@ -5,59 +5,17 @@ const { MessageEmbed } = require('discord.js');
 const subjectID = config.subjectRolesID;
 
 module.exports = {
-    name: 'ready',
-    description: 'ready event',
+    name: 'roles',
+    description: 'get roles',
     run: async (client) => {
         const Guild = client.guilds.cache.get(config.guildID);
-        config.messagesToCheckReactions.forEach(async object => {
-            let message = await client.channels.cache.get(object.channelID).messages.fetch(object.messageID);
-            const reactions = ['🐍', '🖥', '📘', '⚔️', '🏴󠁧󠁢󠁥󠁮󠁧󠁿', '📈', '🏋️‍♂️', '💶', '👷‍♂️']
-            const collector = message.createReactionCollector((reaction, user) => reactions.includes(reaction.emoji.name) && user.id !== client.user.id);
+        let message = await client.channels.cache.get(config.messagesToCheckReactions[0].channelID).messages.fetch(config.messagesToCheckReactions[0].messageID);
+        //const emojis = message.reactions.cache.map(reaction => reaction.emoji.name);
+        console.log(message.content);
 
-            collector.on('collect', async (reaction, user) => {
-                if (user.id === client.user.id) return;
-                if (user.bot) return;
-                reaction.users.remove(user);
-
-                let member = await Guild.members.fetch(user.id);
-                subjectID.forEach(async (id) => {
-                    if (member.roles.cache.has(id)) {
-                        await member.roles.remove(id)
-                    }
-                });
-
-                switch (reaction.emoji.name) {
-                    case '⚔️':
-                        await member.roles.add(subjectID[0]);
-                        break;
-                    case '🐍':
-                        await member.roles.add(subjectID[1]);
-                        break;
-                    case '📘':
-                        await member.roles.add(subjectID[2]);
-                        break;
-                    case '🖥':
-                        await member.roles.add(subjectID[3]);
-                        break;
-                    case '💶':
-                        await member.roles.add(subjectID[4]);
-                        break;
-                    case '🏴󠁧󠁢󠁥󠁮󠁧󠁿':
-                        await member.roles.add(subjectID[5]);
-                        break;
-                    case '📈':
-                        await member.roles.add(subjectID[6]);
-                        break;
-                    case '🏋️‍♂️':
-                        await member.roles.add(subjectID[7]);
-                        break;
-                    case '👷‍♂️':
-                        await member.roles.add(subjectID[8]);
-                        break;
-                    default:
-                        break;
-                }
-            });
-        })
+        const f = () => {1==1}
+        const c = message.createReactionCollector({time: 1})
+        
+        c.on('collect', (i)=>{console.log(i);})
     }
 }
