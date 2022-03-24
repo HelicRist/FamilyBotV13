@@ -4,7 +4,6 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 require('dotenv').config();
 const fs = require('fs');
-const getToken = require('./api/getToken');
 const cli = require('nodemon/lib/cli');
 
 const client = new Client({
@@ -35,16 +34,15 @@ for (const file of eventFiles) {
     client.events.set(event.name, event);
 }
 
-client.on('interaction', interaction => {
+client.on('interaction', async interaction => {
     client.events.get('interaction').run(client, interaction);
 })
 
-client.once('ready', () => {
+client.once('ready', async() => {
     client.events.get('ready').run(client);
-    getToken.run(1,2);
 });
 
-client.on('voiceStateUpdate', (oldState, newState) => {
+client.on('voiceStateUpdate', async (oldState, newState) => {
     client.events.get('voiceStateUpdate').run(client, oldState, newState);
 })
 
