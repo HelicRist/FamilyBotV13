@@ -1,28 +1,31 @@
 const { Client, Intents, Collection } = require('discord.js');
 const config = require('./config.json')
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 require('dotenv').config();
 const fs = require('fs');
 const getToken = require('./api/getToken');
+const cli = require('nodemon/lib/cli');
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]
 });
 
-const commandFolders = fs.readdirSync('./commands');
+client.slash = new Collection();
+
+client.categories = new Collection();
+const commandFolder = fs.readdirSync("./commands")
+client.categories.set("categorie", commandFolder)
 
 client.commands = new Collection();
-client.categories = new Collection();
-
-
-for (const folder of commandFolders) {
-    const commandFIles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
-    let commands = [];
-    for (const file of commandFIles) {
+for(const folder of commandFolder) {
+    let commandList = [];
+    const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js'));
+    for(const file of commandFiles) {
         const command = require(`./commands/${folder}/${file}`);
-        client.commands.set(command.name, command);
-        commands.push(command);
+        commandList.push(command);
     }
-    client.categories.set(folder, commands);
+    client.commands.set(folder, commandList);
 }
 
 client.events = new Collection();
@@ -32,8 +35,8 @@ for (const file of eventFiles) {
     client.events.set(event.name, event);
 }
 
-client.on('messageCreate', message => {
-    client.events.get('messageCreate').run(client, message);
+client.on('interaction', interaction => {
+    client.events.get('interaction').run(client, interaction);
 })
 
 client.once('ready', () => {

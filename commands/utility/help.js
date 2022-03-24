@@ -1,34 +1,39 @@
 const { Message, MessageEmbed } = require("discord.js");
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const fs = require("fs");
 const config = require('../../config.json');
 const sendLog = require('../../functions/log/sendLog');
 
 module.exports = {
     name: 'help',
-    description: `Comando help.`,
-    aliases: ['command', 'commands', 'aiuto'],
-    usage: `${config.prefix}help <nome_comando>`,
-    category: 'utility',
+    description: `${config.prefix}help <categeoria>`,
+    options: [{
+        name: "categoria",
+        type: "STRING",
+        description: "Categoria di cui mostrare le informazioni",
+        required: "false"
+    }],
 
-    run: async (client, message, args) => {
+    run: async (client, interaction, args) => {
         if (args[0]) {
             const category = args[0];
 
             if (!checkCategory(category, client)) {
-                sendLog.run(message, `Categoria **${category}** non trovata!`, 1);
+                sendLog.run(interaction, `Categoria **${category}** non trovata!`, 1);
                 return;
             }
 
-            sendCategoryHelp(client, category, message);
+            sendCategoryHelp(client, category, interaction);
         }
         else {
-            sendGeneralHelp(message);
+            sendGeneralHelp(interaction);
         }
     }
 }
 
 const checkCategory = (category, client) => {
-    if (client.categories.get(category)) {
+    const categorie = client.categories.get("categorie")
+    if (categorie.includes(category)) {
         return true;
     }
     else {
@@ -36,16 +41,18 @@ const checkCategory = (category, client) => {
     }
 }
 
-const sendCategoryHelp = (client, category, message) => {
+const sendCategoryHelp = (client, category, interaction) => {
     let fields = [];
-    const categoryObject = client.categories.get(category);
-    categoryObject.forEach(command => {
+    const categoryList = client.categories.get("categorie");
+    const categoryObject = client.commands
+    
+    let commands = categoryObject.get(category);
+    commands.forEach(command => {
         fields.push({
             name: command.name.toUpperCase(),
-            value: `**Descrizione: **${command.description}\n**Uso: ** `+'`'+`${command.usage}`+'`',
+            value: `**Nome: **${command.name}\n**Uso: ** ` + '`' + `${command.description}` + '`',
         });
     });
-    console.log(fields);
 
     const embed = new MessageEmbed()
         .setTitle(`Comandi di *${category}*`)
@@ -55,10 +62,10 @@ const sendCategoryHelp = (client, category, message) => {
         .setThumbnail(config.iconUrl)
         .setFooter(`Friendly Bot`, config.iconUrl)
 
-    message.channel.send({ embeds: [embed] });
+    interaction.reply({ embeds: [embed] });
 }
 
-const sendGeneralHelp = (message) => {
+const sendGeneralHelp = (interaction) => {
     let fields = [];
     const commandFolders = fs.readdirSync('./commands');
     for (const folder of commandFolders) {
@@ -85,5 +92,5 @@ const sendGeneralHelp = (message) => {
         .setThumbnail(config.iconUrl)
         .setFooter(`Friendly Bot`, config.iconUrl)
 
-    message.channel.send({ embeds: [embed] });
+    interaction.reply({ embeds: [embed] });
 }
