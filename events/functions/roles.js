@@ -2,7 +2,7 @@ const config = require('../../config.json');
 const cron = require('cron');
 const akaneko = require('akaneko');
 const { MessageEmbed } = require('discord.js');
-const subjects = require('../subjectIDs.json');
+const subjects = require('../../data/subjectIDs.json');
 
 module.exports = {
     name: 'roles',
@@ -18,12 +18,14 @@ module.exports = {
         const collector = message.createReactionCollector({ filter, max: 60, errors: ['time'] })
 
         collector.on('collect', async (reaction, user) => {
+            const member = await Guild.members.fetch(user.id);
+            await reaction.users.remove(user);
             subjects.forEach(async subject => {
+                if (member.roles.cache.has(subject.id)) {
+                    await member.roles.remove(subject.id)
+                }
                 if (reaction.emoji.name == subject.emoji) {
-                    const member = await Guild.members.fetch(user.id);
-                    console.log(Guild.members.cache);
-                    console.log(user);
-                    const role = Guild.roles.fetch(subject.id);
+                    const role = await Guild.roles.fetch(subject.id);
                     await member.roles.add(role);
                 }
             });

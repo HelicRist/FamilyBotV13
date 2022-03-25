@@ -1,7 +1,7 @@
 const { Permissions, Guild } = require('discord.js');
 const logger = require('node-color-log');
 const config = require('../config.json');
-const subjects = require('./subjectIDs.json');
+const subjects = require('../data/subjectIDs.json');
 const randomWords = require("random-words");
 
 module.exports = {
@@ -9,19 +9,20 @@ module.exports = {
     on: true,
 
     run: async (client, oldState, newState) => {
-        logger.log('voiceStateUpdate');
         const Guild = client.guilds.cache.get(config.guildID);
 
         let isSubject = false;
+        let subjectName = "";
         subjects.forEach(subject => {
             if (newState.member.roles.cache.has(subject.id)) {
                 isSubject = true;
+                subjectName = subject.nome;
             }
         });
 
         if (newState.channelId == config.createChannelID) {
             if (isSubject) {
-                createSubjectVoice(Guild, newState.member);
+                createSubjectVoice(Guild, newState.member, subjectName);
             }
             else {
                 console.log(1);
@@ -29,7 +30,7 @@ module.exports = {
             }
         }
         else {
-            if (!newState.channelId && oldState.channel.name.endsWith('-t')) {
+            if (oldState.channel && oldState.channel.name.endsWith('-t')) {
                 oldState.channel.delete();
             }
         }
@@ -53,7 +54,7 @@ const createGeneralVoice = (Guild, member) => {
 
     let channels = Guild.channels;
     channels
-        .create(generateName(null), {
+        .create(generateRandomName(), {
             type: 'GUILD_VOICE',
             parent: config.tempChannelsCategoryID,
             permissionOverwrites: permissions,
@@ -64,7 +65,7 @@ const createGeneralVoice = (Guild, member) => {
         .catch(err => { logger.error(err) });
 }
 
-const createSubjectVoice = (Guild, member) => {
+const createSubjectVoice = (Guild, member, subjectName) => {
     const permissions = [
         {
             id: Guild.roles.everyone,
@@ -80,9 +81,9 @@ const createSubjectVoice = (Guild, member) => {
 
     let channels = Guild.channels;
     channels
-        .create(generateName(null), {
+        .create(generateSubjectName(subjectName), {
             type: 'GUILD_VOICE',
-            parent: config.tempChannelsCategoryID,
+            parent: config.libraryCategoryID,
             permissionOverwrites: permissions,
         })
         .then(channel => {
@@ -91,30 +92,34 @@ const createSubjectVoice = (Guild, member) => {
         .catch(err => { logger.error(err) });
 }
 
-const generateName = (subject) => {
+const generateSubjectName = (subject) => {
     let name = "";
+    
+    const books = ['📕', '📓', '📔', '📘', '📙', '📒', '📗']
+
+    let book = books[Math.floor(Math.random() * books.length)];
+    name += book
+    name += ` Stanza di ${subject} `
+    name += book
+    name += "-t"
+
+    return name;
+}
+
+const generateRandomName = () => {
+    let name = "";
+
     const emojis = [
         '😄', '😃', '😀', '😊', '☺', '😉', '😍', '😘', '😚', '😗', '😙', '😜', '😝', '😛', '😳', '😁', '😔', '😌',
         '😒', '😞', '😣', '😢', '😂', '😭', '😪', '😥', '😰', '😅', '😓', '😩', '😫', '😨', '😱', '😠', '😡', '😤',
         '😖', '😆', '😋', '😷', '😎', '😴', '😵', '😲', '😟', '😦', '😧', '😈', '👿', '😮', '😬', '😐', '😕', '😯',
         '😶', '😇', '😏', '😑'
     ]
-    const books = ['📕', '📓', '📔', '📘', '📙', '📒', '📗']
 
-    if(!subject){
-        name += emojis[Math.floor(Math.random() * emojis.length)];
-        name += randomWords(3).join(' ');
-        name += emojis[Math.floor(Math.random() * emojis.length)];
-        name += "-t"
-    }
-    else{
-        let book = books[Math.floor(Math.random() * books.length)];
-        name += book
-        name += ` Stanza di ${subject} `
-        name += book
-        name += "-t"
-    }
-
+    name += emojis[Math.floor(Math.random() * emojis.length)];
+    name += randomWords(3).join(' ');
+    name += emojis[Math.floor(Math.random() * emojis.length)];
+    name += "-t"
 
     return name;
 }
