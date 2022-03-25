@@ -18,12 +18,13 @@ module.exports = {
         const collector = message.createReactionCollector({ filter, max: 60, errors: ['time'] })
 
         collector.on('collect', async (reaction, user) => {
-            subjects.forEach(subject => {
+            subjects.forEach(async subject => {
                 if (reaction.emoji.name == subject.emoji) {
-                    const member = Guild.members.cache.get(user.id);
+                    const member = await Guild.members.fetch(user.id);
                     console.log(Guild.members.cache);
                     console.log(user);
-                    member.roles.add(subject.id);
+                    const role = Guild.roles.fetch(subject.id);
+                    await member.roles.add(role);
                 }
             });
         })
