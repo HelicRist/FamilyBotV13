@@ -19,6 +19,7 @@ const getCompiti = async () => {
             'x-version': '2.1.0',
         }
     }
+    //prg-alunno: end-point schede
 
     let compiti = axios.get(`${config.argoBasicURL}/compiti`, options)
         .then(res => res);
