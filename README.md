@@ -1,5 +1,5 @@
 # FamilyBotV1
-3Private Discord bot built in discord.js v13
+Private Discord bot built in discord.js v13
 
 ## Starting the bot
 
