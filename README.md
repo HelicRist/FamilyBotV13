@@ -4,4 +4,4 @@
 ## Starting the bot
 
 To start the bot, run:
-### node main.js
+### `node main.js`
