@@ -6,5 +6,14 @@ const sendLog = require('../../functions/log/sendLog');
 
 module.exports = {
     name: 'test',
-    description: `${config.prefix}test`
+    description: `${config.prefix}test`,
+
+    run: async (client, interaction, args) => {
+        try{
+            sendLog.run(interaction, "Test command eseguito con successo", 2);
+        }
+        catch(err){
+            sendLog.run(interaction, "Errore nell'eseguzione del comando test", 1);
+        }
+    }
 };

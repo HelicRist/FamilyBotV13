@@ -1,21 +1,21 @@
 const config = require("../../config.json")
-const getCompiti = require("../../api/getCompiti")
+const getAttivita = require("../../api/getAttivita")
 const { MessageEmbed } = require('discord.js')
 const logSender = require("../../functions/log/sendLog")
 
 module.exports = {
-    name: 'compiti',
-    description: `${config.prefix}compiti <giorno>. Senza argomenti mostra i compiti del giorno successivo.`,
+    name: 'attivita',
+    description: `${config.prefix}attivita <giorno> <mese>. Senza argomenti mostra le attività del giorno successivo.`,
     options: [{
         name: "giorno",
         type: "NUMBER",
-        description: "Giorno di cui mostrare i compiti",
+        description: "Giorno di cui mostrare le attivita",
         required: "false"
     },
     {
         name: "mese",
         type: "NUMBER",
-        description: "Mese di cui mostrare i compiti",
+        description: "Mese di cui mostrare le attivita",
         required: "false"
     }],
 
@@ -45,15 +45,18 @@ module.exports = {
             }
         })
 
-        let compiti = await getCompiti()
+        let attivita = await getAttivita()
+
+        current.getMonth() + 1 < 10 ? month = `0${month}` : month = month;
 
         let fields = []
-        const date = current.getFullYear() + '-' + (month) + '-' + day;
-        compiti.data.dati.forEach(compito => {
-            if (compito.datCompiti == date) {
+        const date = current.getFullYear() + '-' + month + '-' + day;
+        console.log(date);
+        attivita.data.dati.forEach(oggetto => {
+            if (oggetto.datGiorno == date) {
                 fields.push({
-                    name: `:pencil2: ${compito.desMateria} ${compito.docente}`,
-                    value: `:blue_book: ${compito.desCompiti}`
+                    name: `:teacher: ${oggetto.desMittente}`,
+                    value: `:notepad_spiral: ${oggetto.desAnnotazioni}`
                 })
             }
         })
@@ -61,12 +64,12 @@ module.exports = {
         if (fields.length == 0) {
             fields.push({
                 name: "Rilassati",
-                value: "Non ci sono compiti! :zzz:"
+                value: "Non ci sono attività! :zzz:"
             })
         }
 
         const embed = new MessageEmbed()
-            .setTitle(`Compiti per il *${date}*`)
+            .setTitle(`Attività per il *${date}*`)
             .setAuthor('Family Bot', config.iconUrl, 'https://discord.gg/fhW9qQW')
             .setColor(0x00AE86)
             .addFields(fields)
