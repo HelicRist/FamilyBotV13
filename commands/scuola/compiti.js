@@ -47,8 +47,10 @@ module.exports = {
 
         let compiti = await getCompiti()
 
+        current.getMonth() + 1 < 10 ? month = `0${month}` : month = month;
+
         let fields = []
-        const date = current.getFullYear() + '-' + (month) + '-' + day;
+        const date = current.getFullYear() + '-' + month + '-' + day;
         compiti.data.dati.forEach(compito => {
             if (compito.datCompiti == date) {
                 fields.push({
