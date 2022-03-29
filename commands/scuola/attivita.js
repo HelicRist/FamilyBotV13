@@ -25,22 +25,23 @@ module.exports = {
         let day = current.getDate() + 1;
         let month = current.getMonth() + 1;
 
+        let mistake = false;
         options.forEach(option => {
             console.log(option);
             if (option.name == "giorno") {
                 if (option.value <= 0 || option.value > 31) {
+                    mistake = true;
                     return logSender.run(interaction, "Inserisci un giorno corretto!", 1)
                 }
                 day = option.value
-                console.log("1");
             }
             else {
                 if (option.name == "mese") {
                     if (option.value <= 0 || option.value > 12) {
+                        mistake = true;
                         return logSender.run(interaction, "Inserisci un mese corretto!", 1)
                     }
                     month = option.value
-                    console.log("2");
                 }
             }
         })
@@ -74,8 +75,8 @@ module.exports = {
             .setColor(0x00AE86)
             .addFields(fields)
             .setThumbnail(config.iconUrl)
-            .setFooter(`Friendly Bot`, config.iconUrl)
-
-        interaction.reply({ embeds: [embed] })
+        if (!mistake) {
+            interaction.reply({ embeds: [embed] })
+        }
     }
 }
